@@ -1,5 +1,4 @@
 import CardPlayer from "../js/CardPlayer.js";
-import CardGrid from "./CardGrid.js";
 import Grid from "./Grid.js";
 import { AddButtonRestart } from "./ButtonRestart.js";
 
@@ -39,7 +38,10 @@ export default class MainScene extends Phaser.Scene {
       y: this.game.config.height - 200,
       card: "playercard",
       image: "paladin",
-      health: 16,
+      health: 15,
+      maxHealth: 15,
+      armor: 1,
+      maxArmor: 1,
       depth: 1,
       ondragend: (pointer, gameObject) => {
         this.player.x = this.player.originalX;
@@ -61,13 +63,17 @@ export default class MainScene extends Phaser.Scene {
               this.highlighted.selected = true;
               break;
             case "armor":
-              this.player.armor = this.highlighted.value;
+              this.player.armor = Math.min(
+                this.player.armor + this.highlighted.value,
+                this.player.maxArmor
+              );
               break;
           }
           if (this.player.dead) {
             AddButtonRestart(this);
           } else {
-            this.grid.fadeFrontRow();
+            // this.grid.fadeFrontRow();
+            this.PrepareNextTurn();
           }
         }
       },
@@ -93,5 +99,11 @@ export default class MainScene extends Phaser.Scene {
         this.highlighted = this.grid.cards[1];
       }
     }
+  }
+
+  PrepareNextTurn() {
+    this.grid.fadeFrontRow();
+    this.player.maxHealth += 1;
+    this.player.maxArmor += 1;
   }
 }
