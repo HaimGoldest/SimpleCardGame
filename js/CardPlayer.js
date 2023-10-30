@@ -2,7 +2,7 @@ import CardDraggable from "../js/CardDraggable.js";
 
 export default class CardPlayer extends CardDraggable {
   constructor(data) {
-    let { health } = data;
+    let { health, maxHealth, armor, maxArmor } = data;
     super(data);
     this.textHealth = new Phaser.GameObjects.BitmapText(
       this.scene,
@@ -13,10 +13,10 @@ export default class CardPlayer extends CardDraggable {
     );
     this.textMaxHealth = new Phaser.GameObjects.BitmapText(
       this.scene,
-      -20,
-      -90,
+      -30,
+      -70,
       "pressstart",
-      health,
+      maxHealth,
       12
     );
     this.textArmor = new Phaser.GameObjects.BitmapText(
@@ -24,6 +24,14 @@ export default class CardPlayer extends CardDraggable {
       0,
       -102,
       "pressstart"
+    );
+    this.textMaxArmor = new Phaser.GameObjects.BitmapText(
+      this.scene,
+      65,
+      -70,
+      "pressstart",
+      maxArmor,
+      12
     );
     this.spriteArmor = new Phaser.GameObjects.Sprite(
       this.scene,
@@ -33,15 +41,19 @@ export default class CardPlayer extends CardDraggable {
     );
     this.textHealth.tint = 0;
     this.textMaxHealth.tint = 0;
+    this.textArmor.tint = 0;
+    this.textMaxArmor.tint = 0;
     this.add([
       this.textHealth,
       this.textMaxHealth,
       this.spriteArmor,
       this.textArmor,
+      this.textMaxArmor,
     ]);
     this.health = health;
-    this.maxHealth = health;
-    this.armor = 0;
+    this.maxHealth = maxHealth;
+    this.armor = armor;
+    this.maxArmor = maxArmor;
   }
 
   set health(newHealth) {
@@ -50,28 +62,39 @@ export default class CardPlayer extends CardDraggable {
     this.textHealth.x = -44 - this.textHealth.width / 2;
   }
 
+  set armor(newArmor) {
+    this._armor = newArmor;
+    this.textArmor.text = this._armor;
+    this.textArmor.x = 47 - this.textArmor.width / 2;
+    this.textArmor.alpha = this._armor == 0 ? 0 : 1;
+    this.textMaxArmor.alpha = this._armor == 0 ? 0 : 1;
+    this.spriteArmor.alpha = this._armor == 0 ? 0 : 1;
+  }
+
   get health() {
     return this._health;
   }
 
+  get armor() {
+    return this._armor;
+  }
+
   set maxHealth(newMaxHealth) {
     this._maxHealth = newMaxHealth;
+    this.textMaxHealth.text = this._maxHealth; 
+  }
+
+  set maxArmor(newMaxArmor) {
+    this._maxArmor = newMaxArmor;
+    this.textMaxArmor.text = this._maxArmor; 
   }
 
   get maxHealth() {
     return this._maxHealth;
   }
 
-  set armor(newArmor) {
-    this._armor = newArmor;
-    this.textArmor.text = this._armor;
-    this.textArmor.x = 47 - this.textArmor.width / 2;
-    this.textArmor.alpha = this._armor == 0 ? 0 : 1;
-    this.spriteArmor.alpha = this._armor == 0 ? 0 : 1;
-  }
-
-  get armor() {
-    return this._armor;
+  get maxArmor() {
+    return this._maxArmor;
   }
 
   attack(attackValue) {
